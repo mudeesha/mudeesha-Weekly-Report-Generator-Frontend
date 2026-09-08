@@ -57,13 +57,13 @@ const statusStyle: Record<
 };
 
 const taskTypeColors: Record<string, string> = {
-  DEVELOPMENT: '#5f4bc4',
-  TESTING: '#7761d8',
-  DOCUMENTATION: '#4fc28b',
-  SUPPORT: '#ec8065',
-  MEETINGS: '#b39be8',
-  RESEARCH: '#8a6bd7',
-  OTHER: '#c7bfd8',
+  DEVELOPMENT: '#2563EB',
+  TESTING: '#7C3AED',
+  DOCUMENTATION: '#16A34A',
+  SUPPORT: '#EA580C',
+  MEETINGS: '#DB2777',
+  RESEARCH: '#0F766E',
+  OTHER: '#64748B',
 };
 
 function formatTaskType(type: string) {

@@ -9,7 +9,6 @@ import {
   ClipboardCheck,
   ClipboardList,
   FolderKanban,
-  History,
   LayoutGrid,
   LogOut,
   MessageSquareText,
@@ -34,7 +33,6 @@ interface NavItem {
 const items: NavItem[] = [
   { label: 'Dashboard', to: '/dashboard', icon: <LayoutGrid className="h-[17px] w-[17px]" /> },
   { label: 'My Reports', to: '/reports', icon: <ClipboardList className="h-[17px] w-[17px]" />, memberOnly: true },
-  { label: 'Report History', to: '/reports/history', icon: <History className="h-[17px] w-[17px]" /> },
   { label: 'Team Reports', to: '/team-reports', icon: <ClipboardCheck className="h-[17px] w-[17px]" />, managerOnly: true },
   { label: 'Projects', to: '/projects', icon: <FolderKanban className="h-[17px] w-[17px]" />, separatorBefore: true },
   { label: 'Team Members', to: '/team-members', icon: <UsersRound className="h-[17px] w-[17px]" />, managerOnly: true },

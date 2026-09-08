@@ -58,7 +58,7 @@ export function MemberDashboard() {
                   <h3 className="text-[14px] font-semibold text-[#393353]">Recent Reports</h3>
                   <p className="mt-0.5 text-[10px] text-[#938ca2]">Your latest report records.</p>
                 </div>
-                <Link href="/reports/history" className="text-[10px] font-medium text-[#594dba] hover:underline">View all</Link>
+                <Link href="/reports" className="text-[10px] font-medium text-[#594dba] hover:underline">View all</Link>
               </div>
               <ReportTable reports={recent} />
             </Card>

@@ -49,6 +49,8 @@ export function ReportTaskCards({
     projects.find(project => project.id === id)?.name ||
     `Project ${id}`;
 
+  const nextWeek = title.toLowerCase().includes('next week');
+
   return (
     <>
       <ReportCardSection
@@ -58,6 +60,7 @@ export function ReportTaskCards({
         items={tasks}
         pageSize={5}
         gridColumns={5}
+        tone={nextWeek ? 'orange' : 'blue'}
         searchText={task =>
           `${task.name} ${task.output || ''} ${projectName(
             task.projectId
@@ -136,7 +139,7 @@ export function ReportTaskCards({
               },
             ]}
             onView={() => setViewing(task)}
-            className="border-l-2 border-l-[#cfc6ef]"
+            
           />
         )}
       />
@@ -168,6 +171,7 @@ export function ReportTaskCards({
             <div className="flex flex-wrap gap-2">
               <PriorityBadge priority={viewing.priority} />
               <TaskStatusBadge status={viewing.status} />
+
               <Badge tone="info">
                 {TASK_TYPE_LABELS[viewing.taskType]}
               </Badge>
