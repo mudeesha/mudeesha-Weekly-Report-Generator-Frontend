@@ -1,173 +1,199 @@
-Weekly Report Generator - Frontend
+# Weekly Report Generator — Next.js Frontend
 
-Frontend application for the Weekly Report Generator & Team Dashboard.
+A real **Next.js App Router + TypeScript** frontend for the Weekly Report Generator and Team Dashboard. It connects to the existing FastAPI backend and keeps the calm professional UI, role-based workflows, dashboards, report version history, and Gemini-backed AI assistant.
 
-Technology Stack
+## Stack
 
-Next.js 16
+- Next.js App Router
 
-React
+- React + TypeScript
 
-TypeScript
+- Tailwind CSS
 
-Tailwind CSS
+- Recharts
 
-Recharts
+- Sonner
 
-Sonner
+- React Markdown + remark-gfm
 
-TanStack Table
+- FastAPI REST backend
 
-Main Features
+## Local setup
 
-Team Member
+Requirements: Node.js 20.9+ and the FastAPI backend running locally.
 
-Login
+```bash
 
-View own weekly reports
+cp .env.example .env.local
 
-Create reports
-
-Save drafts
-
-Edit own drafts/correction versions
-
-Submit and resubmit reports
-
-View manager correction comments
-
-View report version history
-
-View assigned projects
-
-Manager
-
-View team reports
-
-Review submitted reports
-
-Request corrections
-
-Approve reports
-
-View dashboard and analytics
-
-View team members
-
-Manage projects and project membership
-
-Use the AI Chat Assistant
-
-Admin
-
-Manager capabilities
-
-User management
-
-Create users
-
-Change user roles
-
-Deactivate users
-
-Project management
-
-Prerequisites
-
-Node.js 20 or later recommended
-
-npm
-
-Git
-
-Check versions:
-
-node --version
-npm --version
-git --version
-
-Installation
-
-git clone <FRONTEND_REPOSITORY_URL>
-cd <FRONTEND_REPOSITORY_FOLDER>
 npm install
-
-Environment Configuration
-
-Create .env.local in the project root.
-
-NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-
-Do not commit .env.local.
-
-Run the Frontend
 
 npm run dev
 
-Open:
+```
 
-http://localhost:3000
+Open **http://127.0.0.1:3000**.
 
-The FastAPI backend must also be running.
+By default the browser calls `/api/v1`. Next.js rewrites those requests to `http://127.0.0.1:8000/api/v1`, so local development stays same-origin and does not need a separate browser-side API host.
 
-Testing
+```env
+
+BACKEND_API_URL=http://127.0.0.1:8000
+
+NEXT_PUBLIC_API_BASE_URL=/api/v1
+
+```
+
+`BACKEND_API_URL` is server-side configuration. Never put backend secrets, Gemini keys, JWT signing secrets, or database credentials in `NEXT_PUBLIC_*` variables.
+
+## Commands
+
+```bash
+
+npm run dev
+
+npm run typecheck
 
 npm test
-npm run typecheck
+
 npm run build
 
-Backend Connection
+npm start
 
-Default backend:
+npm run lint
 
-http://localhost:8000
+npm run test:browser
 
-Swagger:
+```
 
-http://localhost:8000/docs
+## Folder structure
 
-Important Routes
+```text
 
-Team Member
+app/                    Next.js routes and route layouts only
 
-/dashboard
+components/             App-wide reusable UI/layout/navigation
 
-/reports
+features/               Feature screens and feature-specific components
 
-/reports/new
+reports/
 
-/reports/[id]
+components/member/  Team-member report UI
 
-/reports/[id]/edit
+components/admin/   Manager/Admin report-review UI
 
-/projects
+components/shared/  Report UI reused by both sides
 
-/profile
+services/               FastAPI communication grouped by feature
 
-Manager / Admin
+lib/                    Shared infrastructure, adapters, formatting, permissions
 
-/dashboard
+hooks/                   Cross-feature hooks
 
-/team-reports
+providers/               App-wide React data provider
 
-/reports/[id]
+public/                  Static assets
 
-/projects
+tests/                   Unit and browser tests
 
-/team-members
+types/                   Shared application models
 
-/analytics
+```
 
-/ai-assistant
+### Layer flow
 
-Admin
+```text
 
-/users
+Next.js route
 
-Notes
+↓
 
-Standalone Report History was removed. Report history is shown as Version History inside each report detail page.
+Feature page
 
-Draft report content is private from managers until submission.
+↓
 
-Project-scoped Manager access is a future improvement.
+Role-specific / shared feature components
+
+↓
+
+Service
+
+↓
+
+Shared API client
+
+↓
+
+FastAPI
+
+```
+
+The service layer is **feature-based, not role-based**. For example, both Team Member and Manager/Admin report UIs use `services/report.service.ts`, but they expose different actions through their role-specific UI.
+
+## Role UI separation
+
+Large UI differences are separated; small differences use permission-aware rendering.
+
+- `features/reports/components/member/` — editing, correction, submission
+
+- `features/reports/components/admin/` — review, approve, request changes
+
+- `features/reports/components/shared/` — report content, tables, history, task display
+
+The `admin` folder represents the management-side UI shared by both `MANAGER` and `ADMIN` where their workflow is the same.
+
+## Route access
+
+| Feature | Team Member | Manager | Admin |
+
+|---|---:|---:|---:|
+
+| Dashboard | Yes | Yes | Yes |
+
+| My reports/create/edit | Yes | No | No |
+
+| Team reports/review | No | Yes | Yes |
+
+| Projects | Read-only | Manage | Manage |
+
+| Team members | No | Yes | Yes |
+
+| User administration | No | No | Yes |
+
+| Analytics | No | Yes | Yes |
+
+| AI assistant | No | Yes | Yes |
+
+FastAPI remains the final authorization boundary. Frontend route guards and hidden actions improve UX but do not replace backend RBAC.
+
+## Authentication
+
+The existing FastAPI JWT flow is preserved. The token is stored in `sessionStorage` and sent as a Bearer token by `lib/api-client.ts`. Because the token is browser-side, route protection is implemented with a client `AuthGuard`/`RoleGuard` rather than pretending server middleware can read it.
+
+## AI assistant
+
+The frontend calls only:
+
+```text
+
+POST /api/v1/ai/chat
+
+```
+
+The Gemini key remains in the FastAPI backend. Assistant replies are rendered as Markdown. Conversation history is bounded before it is sent to the backend, and the UI displays only the report count used for the answer.
+
+## Verification
+
+The migrated service/utility test suite contains **43 tests** and passes against the migrated modules. The project also has a Playwright browser suite configured for the Next.js development server on port 3000.
+
+After installing dependencies on your machine, run:
+
+```bash
+
+npm run typecheck
+
+npm test
+
+npm run build
+
+```
