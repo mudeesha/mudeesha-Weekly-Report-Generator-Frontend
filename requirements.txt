@@ -1,0 +1,25 @@
+Frontend Runtime Requirements
+
+Required software:
+- Node.js 20 or later recommended
+- npm
+- Git
+
+Install application dependencies from package.json:
+
+npm install
+
+Environment file:
+.env.local
+
+Required variable:
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+
+Commands:
+npm run dev
+npm test
+npm run typecheck
+npm run build
+
+Default frontend URL:
+http://localhost:3000
